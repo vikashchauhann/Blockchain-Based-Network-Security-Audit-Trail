@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtered Transactions</title>
+    <!-- Link to external stylesheet -->
+	<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Logout button, displayed if user is logged in -->
+	<div class="logout-btn">
+        {% if session.logged_in %}
+            <a href="/logout">Logout</a>
+        {% endif %}
+    </div>
+    <!-- Heading -->
+    <h1>Filtered Transactions</h1>
+    <!-- Form to select date for filtering transactions -->
+    <form method="POST">
+        <label for="date">Select Date:</label>
+        <input type="date" id="date" name="date">
+        <input type="submit" value="Filter">
+    </form>
+    <!-- List of available timestamps -->
+    <h2>Available Timestamps:</h2>
+    <ul>
+        <!-- Loop through timestamps -->
+        {% for timestamp in all_timestamps %}
+            <!-- Link to filter transactions by date -->
+            <li><a href="/?date={{ timestamp }}">{{ timestamp }}</a>
+            <!-- Display number of transactions for each timestamp -->
+            ({{ timestamp_transactions_count.get(timestamp, 0) }})</li>
+        {% endfor %}
+    </ul>
+    <!-- Loop through transactions data -->
+    {% for data in transactions_data %}
+        <!-- Display contract address -->
+        <div class="contract-address">Contract Address: {{ data["contract_address"] }}</div>
+        <!-- List of transactions for each contract -->
+        <ul class="transactions-list">
+            <!-- Loop through transactions -->
+            {% for tx in data["transactions"] %}
+                <!-- Display transaction details -->
+                <li>
+                    <pre>
+                        <!-- Loop through key-value pairs of transaction -->
+                        {% for key, value in tx.items() %}
+                            {{ key }}: {{ value }}<br>
+                        {% endfor %}
+                    </pre>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+</body>
+</html>
